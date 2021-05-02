@@ -32,7 +32,7 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>4.2.0</version>
+      <version>4.6.1</version>
     </dependency>
   </dependencies>
 
@@ -49,6 +49,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -62,10 +63,44 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
         <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>info.picocli</groupId>
+              <artifactId>picocli-codegen</artifactId>
+              <version>4.6.1</version>
+            </path>
+          </annotationProcessorPaths>
           <source>11</source>
           <target>11</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.graalvm.nativeimage</groupId>
+        <artifactId>native-image-maven-plugin</artifactId>
+        <version>20.0.0</version>
+        <configuration>
+          <mainClass>uk.gcjensen.splend.SplendCLI</mainClass>
+          <imageName>splend</imageName>
+          <buildArgs>
+            --no-fallback
+            --report-unsupported-elements-at-runtime
+            --allow-incomplete-classpath
+            -H:ReflectionConfigurationFiles=classes/META-INF/native-image/picocli-generated/reflect-config.json
+            -H:+ReportExceptionStackTraces
+            -H:EnableURLProtocols=https
+          </buildArgs>
+          <skip>false</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>native-image</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

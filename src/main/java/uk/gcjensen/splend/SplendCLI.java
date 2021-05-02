@@ -5,7 +5,6 @@ import java.util.concurrent.Callable;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
 
 /**
  * SplendCLI Main class.
@@ -14,7 +13,8 @@ import picocli.CommandLine.Option;
     name = "splend",
     mixinStandardHelpOptions = true,
     version = "splend 0.0.1",
-    description = "Interact with splend from the command line."
+    description = "Interact with splend from the command line.",
+    showEndOfOptionsDelimiterInUsageHelp = false
 )
 public class SplendCLI implements Callable<Integer> {
     public static void main( String[] args ) {
