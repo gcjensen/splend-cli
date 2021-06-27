@@ -14,10 +14,11 @@ import picocli.CommandLine.Command;
     mixinStandardHelpOptions = true,
     version = "splend 0.0.1",
     description = "Interact with splend from the command line.",
-    showEndOfOptionsDelimiterInUsageHelp = false
+    showEndOfOptionsDelimiterInUsageHelp = false,
+    subcommands = { Outgoing.class }
 )
 public class SplendCLI implements Callable<Integer> {
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         int exitCode = new CommandLine(new SplendCLI()).execute(args);
         System.exit(exitCode);
     }

@@ -1,12 +1,18 @@
 package uk.gcjensen.splend;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.URI;
 import java.net.http.HttpResponse;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class SplendAPI {
+    private final Charset CHAR_SET = StandardCharsets.UTF_8;
+
     private final HttpClient client = HttpClient.newHttpClient();
     private final String baseURL;
     private final Config config;
@@ -14,6 +20,16 @@ public class SplendAPI {
     public SplendAPI(Config config) {
         this.config = config;
         baseURL = config.getApiURL();
+    }
+
+    public String getOutgoings(Map<String, Object> params) {
+        // Build up query string from map of params
+        String queryString = params.entrySet().stream()
+            .map(p -> p.getKey() + "=" + URLEncoder.encode(p.getValue().toString(), CHAR_SET))
+            .reduce((p1, p2) -> p1 + "&" + p2)
+            .orElse("");
+
+        return makeRequest(String.format("/user/%d/outgoings?%s", config.getID(), queryString));
     }
 
     public String getSummary() {
