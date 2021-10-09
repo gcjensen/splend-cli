@@ -29,19 +29,37 @@ public class SplendAPI {
             .reduce((p1, p2) -> p1 + "&" + p2)
             .orElse("");
 
-        return makeRequest(String.format("/user/%d/outgoings?%s", config.getID(), queryString));
+        return makeGetRequest(String.format("/user/%d/outgoings?%s", config.getID(), queryString));
     }
 
     public String getSummary() {
-       return makeRequest(String.format("/user/%d/summary", config.getID()));
+       return makeGetRequest(String.format("/user/%d/summary", config.getID()));
     }
 
-    private String makeRequest(String path) {
+    public String settleAllOutgoings() {
+        return makePostRequest(String.format("/user/%d/settle", config.getID()));
+    }
+
+    private String makeGetRequest(String path) {
         HttpRequest request = HttpRequest.newBuilder(URI.create(baseURL + path))
             .header("accept", "application/json")
             .header("Token", config.getToken())
             .build();
 
+        return makeRequest(request);
+    }
+
+    private String makePostRequest(String path) {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(baseURL + path))
+            .POST(HttpRequest.BodyPublishers.noBody())
+            .header("accept", "application/json")
+            .header("Token", config.getToken())
+            .build();
+
+        return makeRequest(request);
+    }
+
+    private String makeRequest(HttpRequest request) {
         HttpResponse<String> response = null;
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());

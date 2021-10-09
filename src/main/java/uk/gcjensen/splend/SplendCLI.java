@@ -25,7 +25,8 @@ public class SplendCLI implements Callable<Integer> {
 
     @Command(
         name = "summary",
-        description = "Retrieve your Splend summary."
+        description = "Retrieve your Splend summary.",
+        mixinStandardHelpOptions = true
     )
     public void summary() {
         try {
